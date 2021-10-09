@@ -1,8 +1,4 @@
-image:
-  file: .gitpod.Dockerfile
-tasks:
-  - init: |
-      cabal update
+image: haskell:8
 
 vscode:
   extensions:
