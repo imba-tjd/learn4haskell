@@ -1,8 +1,9 @@
-image: haskell:8
+image:
+  file: .gitpod.Dockerfile
 
 tasks:
   - init: |
-      echo "export PATH=$PATH:$(ls /opt/ghc/*/bin -d)" >> ~/.bashrc
+      cabal update
 
 vscode:
   extensions:
