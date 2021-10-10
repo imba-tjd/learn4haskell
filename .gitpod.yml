@@ -1,5 +1,9 @@
 image: haskell:8
 
+tasks:
+  - init: |
+      echo "export PATH=$PATH:$(ls /opt/ghc/*/bin -d)" >> ~/.bashrc
+
 vscode:
   extensions:
     - haskell.haskell
