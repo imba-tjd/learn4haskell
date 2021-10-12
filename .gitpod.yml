@@ -2,9 +2,9 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  init: |
-    cabal v2-update
-    make build
+  - init: |
+      cabal v2-update
+      make build
 
 vscode:
   extensions:
