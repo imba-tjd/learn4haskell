@@ -343,6 +343,12 @@ Define the Book product data type. You can take inspiration from our description
 of a book, but you are not limited only by the book properties we described.
 Create your own book type of your dreams!
 -}
+data Book = MkBook {
+  bookName :: String,
+  bookAuthor :: String,
+  bookCover :: String,
+  bookPages :: Int
+} deriving (Show)
 
 {- |
 =⚔️= Task 2
@@ -375,6 +381,25 @@ after the fight. The battle has the following possible outcomes:
 ♫ NOTE: In this task, you need to implement only a single round of the fight.
 
 -}
+data Knight = MkKnight {
+  knightHealth :: Int,
+  knightAttack :: Int,
+  knightGold :: Int
+} deriving (Show)
+
+data Monster = MkMonster {
+  monsterHealth :: Int,
+  monsterAttack :: Int,
+  monsterGold :: Int
+} deriving (Show)
+
+fight :: Knight -> Monster -> Int
+fight k m
+  | knightHealthRemain < 0 = -1
+  | knightHealthRemain == 0 = knightGold k
+  | knightHealthRemain > 0 = knightGold k + monsterGold m
+  where
+  knightHealthRemain = knightHealth k - monsterAttack m
 
 {- |
 =🛡= Sum types
@@ -461,6 +486,7 @@ and provide more flexibility when working with data types.
 Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
+data Breakfast = Bread | Milk | Egg
 
 {- |
 =⚔️= Task 4
@@ -481,6 +507,7 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+data City = (Church | Libray) [Houses Int]
 
 {-
 =🛡= Newtypes
