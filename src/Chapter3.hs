@@ -398,6 +398,7 @@ fight k m
   | knightHealthRemain < 0 = -1
   | knightHealthRemain == 0 = knightGold k
   | knightHealthRemain > 0 = knightGold k + monsterGold m
+  | otherwise = error "Impossible"
   where
   knightHealthRemain = knightHealth k - monsterAttack m
 
@@ -507,7 +508,26 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
-data City = (Church | Libray) [Houses Int]
+
+data Castle = MkCastle String | NoCastle
+data Wall = MkWall | NoWall
+data ChurchOrLibrary = Church | Library
+data House = People Int
+data City = MkCity Castle Wall ChurchOrLibrary [House]
+
+buildCastle :: City -> String -> City
+buildCastle (MkCity _ wall col houses) castlename = MkCity (MkCastle castlename) wall col houses
+
+buildHouse :: City -> Int -> City
+buildHouse (MkCity castle wall col houses) peoplenum = MkCity castle wall col (People peoplenum : houses)
+
+buildWalls :: City -> City
+buildWalls city@(MkCity NoCastle _ _ _) = city
+buildWalls city@(MkCity castle _ col houses)
+  | peoplenum < 10 = city
+  | otherwise = MkCity castle MkWall col houses
+    where
+    peoplenum = sum [ let People n = x in n | x<-houses]
 
 {-
 =🛡= Newtypes
@@ -590,21 +610,29 @@ introducing extra newtypes.
     implementation of the "hitPlayer" function at all!
 -}
 data Player = Player
-    { playerHealth    :: Int
-    , playerArmor     :: Int
-    , playerAttack    :: Int
-    , playerDexterity :: Int
-    , playerStrength  :: Int
+    { playerHealth    :: Health
+    , playerArmor     :: Armor
+    , playerAttack    :: Attack
+    , playerDexterity :: Dexterity
+    , playerStrength  :: Strength
     }
 
-calculatePlayerDamage :: Int -> Int -> Int
-calculatePlayerDamage attack strength = attack + strength
+newtype Attack = MkAttack Int
+newtype Strength = MkStrength Int
+newtype Damage = MkDamage Int
+newtype Armor = MkArmor Int
+newtype Dexterity = MkDexterity Int
+newtype Defense = MkDefense Int
+newtype Health = MkHealth Int
 
-calculatePlayerDefense :: Int -> Int -> Int
-calculatePlayerDefense armor dexterity = armor * dexterity
+calculatePlayerDamage :: Attack -> Strength -> Damage
+calculatePlayerDamage (MkAttack attack) (MkStrength strength) = MkDamage (attack + strength)
 
-calculatePlayerHit :: Int -> Int -> Int -> Int
-calculatePlayerHit damage defense health = health + defense - damage
+calculatePlayerDefense :: Armor -> Dexterity -> Defense
+calculatePlayerDefense (MkArmor armor) (MkDexterity dexterity) = MkDefense (armor * dexterity)
+
+calculatePlayerHit :: Damage -> Defense -> Health -> Health
+calculatePlayerHit (MkDamage damage) (MkDefense defense) (MkHealth health) = MkHealth (health + defense - damage)
 
 -- The second player hits first player and the new first player is returned
 hitPlayer :: Player -> Player -> Player
@@ -781,6 +809,11 @@ parametrise data types in places where values can be of any general type.
 🕯 HINT: 'Maybe' that some standard types we mentioned above are useful for
   maybe-treasure ;)
 -}
+
+data DragonLair x y = MkDragonLair {
+  treasure :: Maybe x,
+  power :: y
+}
 
 {-
 =🛡= Typeclasses
