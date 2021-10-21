@@ -972,6 +972,16 @@ Implement instances of "Append" for the following types:
 class Append a where
     append :: a -> a -> a
 
+newtype Gold = Gold Int
+instance Append Gold where
+    append (Gold g1) (Gold g2) = Gold (g1 + g2)
+
+instance Append [a] where
+    append l1 l2 = l1 ++ l2
+
+instance Append (Maybe a) where
+    append (Just a) (Just b) = Just (append a b)
+    append _ _ = Nothing
 
 {-
 =🛡= Standard Typeclasses and Deriving
@@ -1032,6 +1042,20 @@ implement the following functions:
 
 🕯 HINT: to implement this task, derive some standard typeclasses
 -}
+data Week = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
+    deriving (Enum)
+
+isWeekend :: Week -> Bool
+isWeekend Saturday = True
+isWeekend Sunday = True
+isWeekend _ = False
+
+nextDay :: Week -> Week
+nextDay d = next d
+
+daysToParty :: Week -> Int
+daysToParty Friday = 0
+daysToParty d = 1 + daysToParty (nextDay d)
 
 {-
 =💣= Task 9*
@@ -1067,6 +1091,9 @@ properties using typeclasses, but they are different data types in the end.
 Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
+
+class Fighter where
+    attack :: Fighter -> Fighter
 
 
 {-
