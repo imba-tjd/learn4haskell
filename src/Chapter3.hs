@@ -1092,9 +1092,30 @@ Implement data types and typeclasses, describing such a battle between two
 contestants, and write a function that decides the outcome of a fight!
 -}
 
-class Fighter where
-    attack :: Fighter -> Fighter
+newtype Health = Health Int
+newtype Attack = Attack Int
+newtype Defense = Defense Int
 
+class Fighter where
+    health :: Fighter -> Health
+    attack :: Fighter -> Attack
+    defense :: Fighter -> Defense
+    attackOnce :: Fighter a, Fighter b => a -> b -> b
+    fight :: Fighter -> Fighter -> Fighter
+
+    
+data Knight = {
+    knightHealth :: Health,
+    knightAttack :: Attack,
+    knightDefense :: Defense
+}
+drink :: Knight -> Knight
+Cast :: Knight -> Knight
+
+data Monster = {
+    monsterHealth :: Health
+}
+runaway :: Monster
 
 {-
 You did it! Now it is time to open pull request with your changes
