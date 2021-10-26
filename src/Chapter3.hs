@@ -1096,25 +1096,36 @@ newtype Health = Health Int
 newtype Attack = Attack Int
 newtype Defense = Defense Int
 
-class Fighter where
-    health :: Fighter -> Health
-    attack :: Fighter -> Attack
-    defense :: Fighter -> Defense
-    attackOnce :: Fighter a, Fighter b => a -> b -> b
-    fight :: Fighter -> Fighter -> Fighter
+class Fighter f where
+    health :: f -> Health
+    attack :: f -> Attack
+    defense :: f -> Defense
 
-    
 data Knight = {
     knightHealth :: Health,
     knightAttack :: Attack,
     knightDefense :: Defense
 }
+instance Fighter Knight where
+    health = knightHealth
+    attack = knightAttack
+    defense = knightDefense
+
 drink :: Knight -> Knight
+drink k = k { knightHealth = (knightHealth k) + 10 }
+
 Cast :: Knight -> Knight
+Cast k = k { knightDefense = (knightDefense k) + 5 }
 
 data Monster = {
-    monsterHealth :: Health
+    monsterHealth :: Health,
+    monsterAttack :: Attack
 }
+instance Fighter Monster where
+    health = monsterHealth
+    attack = monsterAttack
+    defense _ = 0
+
 runaway :: Monster
 
 {-
